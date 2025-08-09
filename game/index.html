@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coconut Toss</title>
+    <script src="https://telegram.org/js/games.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1);
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        
+        #gameContainer {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            cursor: crosshair;
+        }
+        
+        #rules, #victory, #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 90%;
+        }
+        
+        .btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        
+        .btn:hover { background: #ff5252; }
+        
+        #gameUI {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        #basket {
+            position: absolute;
+            bottom: 100px;
+            /* BASKET SIZE ADJUSTMENT - Change width/height for hit area (currently 20% of screen width) */
+            width: 20vw; 
+            height: 15vw;
+            min-width: 60px;
+            min-height: 45px;
+            max-width: 120px;
+            max-height: 90px;
+            background: #8B4513;
+            border-radius: 10px 10px 20px 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: basketShake 0.3s infinite;
+        }
+        
+        .coconut {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #8B4513;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        @keyframes basketShake {
+            /* BASKET SHAKE INTENSITY - Adjust translate values for more/less shake */
+            0% { transform: translateX(-50%) translateY(0px) rotate(0deg); }
+            10% { transform: translateX(-45%) translateY(-4px) rotate(2deg); }
+            20% { transform: translateX(-55%) translateY(2px) rotate(-3deg); }
+            30% { transform: translateX(-48%) translateY(-3px) rotate(1deg); }
+            40% { transform: translateX(-52%) translateY(3px) rotate(-2deg); }
+            50% { transform: translateX(-47%) translateY(-2px) rotate(2deg); }
+            60% { transform: translateX(-53%) translateY(4px) rotate(-1deg); }
+            70% { transform: translateX(-49%) translateY(-3px) rotate(3deg); }
+            80% { transform: translateX(-51%) translateY(2px) rotate(-2deg); }
+            90% { transform: translateX(-48%) translateY(-4px) rotate(1deg); }
+            100% { transform: translateX(-50%) translateY(0px) rotate(0deg); }
+        }
+        
+        @keyframes screenShake {
+            0% { transform: translate(0); }
+            10% { transform: translate(-1px, -1px); }
+            20% { transform: translate(1px, -1px); }
+            30% { transform: translate(-1px, 1px); }
+            40% { transform: translate(1px, 1px); }
+            50% { transform: translate(0); }
+        }
+        
+        .screen-shake {
+            animation: screenShake 0.5s ease-in-out;
+        }
+        
+        .fireworks {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ffff00;
+            border-radius: 50%;
+        }
+        
+        #victoryCode {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 8px;
+        }
+        
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <!-- Rules Screen -->
+        <div id="rules">
+            <h2>🥥 Coconut Toss Game 🥥</h2>
+            <div style="text-align: left; margin: 15px 0;">
+                <h3>Rules:</h3>
+                <p>• One Telegram account can play once per 48 hours</p>
+                <p>• You must join our Telegram group to play</p>
+                <p>• Toss 3 coconuts into the shaking basket within 60 seconds</p>
+                <p>• You have 5 coconuts total (5 attempts)</p>
+                <p>• Tap and drag to aim, release to throw</p>
+                <p>• Screen will shake to increase difficulty</p>
+            </div>
+            <button class="btn" onclick="checkGroupMembership()">Join Group & Start Game</button>
+        </div>
+        
+        <!-- Game Screen -->
+        <div id="gameScreen" class="hidden">
+            <div id="gameUI">
+                <div>Time: <span id="timer">60</span>s</div>
+                <div>Score: <span id="score">0</span>/3</div>
+                <div>Coconuts: <span id="coconutsLeft">5</span></div>
+            </div>
+            
+            <div id="basket"></div>
+            <div id="message" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 24px; font-weight: bold; display: none;"></div>
+        </div>
+        
+        <!-- Victory Screen -->
+        <div id="victory" class="hidden">
+            <h2>🎉 Congratulations! 🎉</h2>
+            <p>You won a "Sex on the Beach" cocktail!</p>
+            <p>Show this code at the bar:</p>
+            <div id="victoryCode"></div>
+            <p style="font-size: 12px; color: #666;">Valid for 24 hours</p>
+            <button class="btn" onclick="TelegramGameProxy.shareScore()">Share Score</button>
+        </div>
+        
+        <!-- Game Over Screen -->
+        <div id="gameOver" class="hidden">
+            <h2>⏰ Time's Up!</h2>
+            <p>You didn't manage to get 3 coconuts in the basket.</p>
+            <p>Try again in 48 hours!</p>
+            <button class="btn" onclick="TelegramGameProxy.shareScore()">Share Score</button>
+        </div>
+    </div>
+
+    <script>
+        class CoconutGame {
+            constructor() {
+                this.score = 0;
+                this.coconutsLeft = 5;
+                this.timeLeft = 60;
+                this.gameActive = false;
+                this.basketElement = document.getElementById('basket');
+                this.gameContainer = document.getElementById('gameContainer');
+                this.lastPlayTime = localStorage.getItem('lastPlayTime');
+                this.coconuts = [];
+                this.currentCoconut = null;
+                this.isDragging = false;
+                this.startX = 0;
+                this.startY = 0;
+                this.enableCooldown = true; // Set to false for testing
+            }
+            
+            checkCooldown() {
+                if (this.lastPlayTime) {
+                    const timeDiff = Date.now() - parseInt(this.lastPlayTime);
+                    const hoursDiff = timeDiff / (1000 * 60 * 60);
+                    return hoursDiff >= 48;
+                }
+                return true;
+            }
+            
+            startGame() {
+                if (this.enableCooldown && !this.checkCooldown()) {
+                    alert('You can play again in ' + Math.ceil(48 - ((Date.now() - parseInt(this.lastPlayTime)) / (1000 * 60 * 60))) + ' hours');
+                    return;
+                }
+                
+                if (this.enableCooldown) {
+                    localStorage.setItem('lastPlayTime', Date.now().toString());
+                }
+                document.getElementById('rules').classList.add('hidden');
+                document.getElementById('gameScreen').classList.remove('hidden');
+                this.gameActive = true;
+                this.startTimer();
+                this.createCoconut();
+                this.startScreenShake();
+            }
+            
+            startTimer() {
+                const timer = setInterval(() => {
+                    this.timeLeft--;
+                    document.getElementById('timer').textContent = this.timeLeft;
+                    
+                    if (this.timeLeft <= 0 || this.score >= 3) {
+                        clearInterval(timer);
+                        this.endGame();
+                    }
+                }, 1000);
+            }
+            
+            startScreenShake() {
+                setInterval(() => {
+                    if (this.gameActive) {
+                        this.gameContainer.classList.add('screen-shake');
+                        setTimeout(() => {
+                            this.gameContainer.classList.remove('screen-shake');
+                        }, 500);
+                    }
+                }, 2000);
+            }
+            
+            createCoconut() {
+                if (this.coconutsLeft <= 0) return;
+                
+                const coconut = document.createElement('div');
+                coconut.className = 'coconut';
+                coconut.style.left = Math.random() * (window.innerWidth - 30) + 'px';
+                coconut.style.top = '50px';
+                this.gameContainer.appendChild(coconut);
+                
+                this.currentCoconut = coconut;
+                this.addCoconutEvents(coconut);
+            }
+            
+            addCoconutEvents(coconut) {
+                let startX, startY, isDragging = false;
+                
+                const start = (e) => {
+                    isDragging = true;
+                    const touch = e.touches ? e.touches[0] : e;
+                    startX = touch.clientX;
+                    startY = touch.clientY;
+                };
+                
+                const move = (e) => {
+                    if (!isDragging) return;
+                    e.preventDefault();
+                    const touch = e.touches ? e.touches[0] : e;
+                    coconut.style.left = (touch.clientX - 15) + 'px';
+                    coconut.style.top = (touch.clientY - 15) + 'px';
+                };
+                
+                const end = (e) => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    const touch = e.changedTouches ? e.changedTouches[0] : e;
+                    this.throwCoconut(coconut, startX, startY, touch.clientX, touch.clientY);
+                };
+                
+                coconut.addEventListener('mousedown', start);
+                coconut.addEventListener('touchstart', start);
+                coconut.addEventListener('mousemove', move);
+                coconut.addEventListener('touchmove', move);
+                coconut.addEventListener('mouseup', end);
+                coconut.addEventListener('touchend', end);
+            }
+            
+            throwCoconut(coconut, startX, startY, endX, endY) {
+                this.coconutsLeft--;
+                document.getElementById('coconutsLeft').textContent = this.coconutsLeft;
+                
+                // Basketball-like physics with bounce
+                const deltaX = (endX - startX) * 0.8;
+                const deltaY = (endY - startY) * 0.8;
+                
+                const coconutRect = coconut.getBoundingClientRect();
+                const startPosX = coconutRect.left;
+                const startPosY = coconutRect.top;
+                
+                // Arc trajectory calculation
+                const gravity = 0.5;
+                const initialVelocityX = deltaX * 0.1;
+                const initialVelocityY = deltaY * 0.1;
+                
+                let time = 0;
+                const animate = () => {
+                    time += 0.3;
+                    
+                    const x = startPosX + (initialVelocityX * time);
+                    const y = startPosY + (initialVelocityY * time) + (0.5 * gravity * time * time);
+                    
+                    coconut.style.left = x + 'px';
+                    coconut.style.top = y + 'px';
+                    
+                    // Check collision with basket
+                    const basketRect = this.basketElement.getBoundingClientRect();
+                    const coconutCurrentRect = coconut.getBoundingClientRect();
+                    
+                    if (this.checkCollision(coconutCurrentRect, basketRect)) {
+                        this.score++;
+                        document.getElementById('score').textContent = this.score;
+                        this.showMessage('Great shot! 🎯');
+                        this.createFireworks();
+                        coconut.remove();
+                        
+                        if (this.score >= 3) {
+                            setTimeout(() => this.victory(), 1000);
+                            return;
+                        } else if (this.coconutsLeft > 0) {
+                            setTimeout(() => this.createCoconut(), 1000);
+                        }
+                        return;
+                    }
+                    
+                    // Bounce off edges or floor
+                    if (x < 0 || x > window.innerWidth || y > window.innerHeight) {
+                        if (y > window.innerHeight - 50) { // Hit floor - bounce and disappear
+                            coconut.style.transform = 'scale(0.8)';
+                            setTimeout(() => {
+                                coconut.remove();
+                                this.showMessage('Try again! 🎯');
+                                if (this.coconutsLeft > 0 && this.score < 3) {
+                                    setTimeout(() => this.createCoconut(), 1000);
+                                } else if (this.score < 3) {
+                                    setTimeout(() => this.endGame(), 1000);
+                                }
+                            }, 200);
+                        } else {
+                            // Bounce off sides and disappear
+                            coconut.remove();
+                            this.showMessage('Try again! 🎯');
+                            if (this.coconutsLeft > 0 && this.score < 3) {
+                                setTimeout(() => this.createCoconut(), 1000);
+                            } else if (this.score < 3) {
+                                setTimeout(() => this.endGame(), 1000);
+                            }
+                        }
+                        return;
+                    }
+                    
+                    requestAnimationFrame(animate);
+                };
+                
+                requestAnimationFrame(animate);
+            }
+            
+            checkCollision(coconutRect, basketRect) {
+                return !(coconutRect.right < basketRect.left || 
+                        coconutRect.left > basketRect.right || 
+                        coconutRect.bottom < basketRect.top || 
+                        coconutRect.top > basketRect.bottom);
+            }
+            
+            showMessage(text) {
+                const message = document.getElementById('message');
+                message.textContent = text;
+                message.style.display = 'block';
+                setTimeout(() => {
+                    message.style.display = 'none';
+                }, 1500);
+            }
+            
+            createFireworks() {
+                for (let i = 0; i < 10; i++) {
+                    const firework = document.createElement('div');
+                    firework.className = 'fireworks';
+                    firework.style.left = Math.random() * window.innerWidth + 'px';
+                    firework.style.top = Math.random() * window.innerHeight + 'px';
+                    firework.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                    this.gameContainer.appendChild(firework);
+                    
+                    setTimeout(() => firework.remove(), 1000);
+                }
+            }
+            
+            victory() {
+                this.gameActive = false;
+                document.getElementById('gameScreen').classList.add('hidden');
+                document.getElementById('victory').classList.remove('hidden');
+                
+                const code = 'BEACH-' + Date.now().toString().slice(-6) + '-' + Math.random().toString(36).substr(2, 4).toUpperCase();
+                document.getElementById('victoryCode').textContent = code;
+                
+                TelegramGameProxy.setScore(this.score);
+            }
+            
+            endGame() {
+                this.gameActive = false;
+                document.getElementById('gameScreen').classList.add('hidden');
+                document.getElementById('gameOver').classList.remove('hidden');
+                TelegramGameProxy.setScore(this.score);
+            }
+        }
+        
+        const game = new CoconutGame();
+        
+        function checkGroupMembership() {
+            const joined = confirm('Please join our Telegram group @anjunavibe first. Have you joined?');
+            if (joined) {
+                game.startGame();
+            } else {
+                alert('Good luck! Join the group to play the game.');
+                window.open('https://t.me/+xexvHCZkkR9lZjcy', '_blank');
+            }
+        }
+        
+        // Telegram Games API
+        const TelegramGameProxy = {
+            setScore: function(score) {
+                if (window.TelegramGameProxy) {
+                    window.TelegramGameProxy.setScore(score);
+                }
+            },
+            shareScore: function() {
+                if (window.TelegramGameProxy) {
+                    window.TelegramGameProxy.shareScore();
+                } else {
+                    alert('Share your score: ' + game.score + ' coconuts in the basket!');
+                }
+            }
+        };
+    </script>
+</body>
+</html>
