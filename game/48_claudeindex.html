@@ -1,20 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Coconut Toss Game</title>
-  <style>
-    /* (вставь здесь стили из твоего HTML) */
-  </style>
-</head>
-<body>
-  <div id="gameContainer"><!DOCTYPE html>
-<html lang="en">
-<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coconut Toss</title>
+    <script src="https://telegram.org/js/games.js"></script>
     <style>
         body {
             margin: 0;
@@ -192,53 +182,48 @@
     </div>
 
     <script>
-            // === Флаг для включения/выключения 48-часового ограничения ===
-    const ENABLE_COOLDOWN = true; // true — ограничение работает, false — можно играть сколько угодно
-
-    class CoconutGame {
-        constructor() {
-            this.score = 0;
-            this.coconutsLeft = 5;
-            this.timeLeft = 60;
-            this.gameActive = false;
-            this.basketElement = document.getElementById('basket');
-            this.gameContainer = document.getElementById('gameContainer');
-            this.lastPlayTime = localStorage.getItem('lastPlayTime');
-            this.coconuts = [];
-            this.currentCoconut = null;
-            this.isDragging = false;
-            this.startX = 0;
-            this.startY = 0;
-        }
-        
-        checkCooldown() {
-            if (!ENABLE_COOLDOWN) return true; // Ограничение выключено
-            if (this.lastPlayTime) {
-                const timeDiff = Date.now() - parseInt(this.lastPlayTime);
-                const hoursDiff = timeDiff / (1000 * 60 * 60);
-                return hoursDiff >= 48;
-            }
-            return true;
-        }
-        
-        startGame() {
-            if (ENABLE_COOLDOWN && !this.checkCooldown()) {
-                const hoursLeft = Math.ceil(48 - ((Date.now() - parseInt(this.lastPlayTime)) / (1000 * 60 * 60)));
-                alert('You can play again in ' + hoursLeft + ' hours');
-                return;
+        class CoconutGame {
+            constructor() {
+                this.score = 0;
+                this.coconutsLeft = 5;
+                this.timeLeft = 60;
+                this.gameActive = false;
+                this.basketElement = document.getElementById('basket');
+                this.gameContainer = document.getElementById('gameContainer');
+                this.lastPlayTime = localStorage.getItem('lastPlayTime');
+                this.coconuts = [];
+                this.currentCoconut = null;
+                this.isDragging = false;
+                this.startX = 0;
+                this.startY = 0;
+                this.enableCooldown = false; // Set to false for testing
             }
             
-            if (ENABLE_COOLDOWN) {
-                localStorage.setItem('lastPlayTime', Date.now().toString());
+            checkCooldown() {
+                if (this.lastPlayTime) {
+                    const timeDiff = Date.now() - parseInt(this.lastPlayTime);
+                    const hoursDiff = timeDiff / (1000 * 60 * 60);
+                    return hoursDiff >= 48;
+                }
+                return true;
             }
             
-            document.getElementById('rules').classList.add('hidden');
-            document.getElementById('gameScreen').classList.remove('hidden');
-            this.gameActive = true;
-            this.startTimer();
-            this.createCoconut();
-            this.startScreenShake();
-        }
+            startGame() {
+                if (this.enableCooldown && !this.checkCooldown()) {
+                    alert('You can play again in ' + Math.ceil(48 - ((Date.now() - parseInt(this.lastPlayTime)) / (1000 * 60 * 60))) + ' hours');
+                    return;
+                }
+                
+                if (this.enableCooldown) {
+                    localStorage.setItem('lastPlayTime', Date.now().toString());
+                }
+                document.getElementById('rules').classList.add('hidden');
+                document.getElementById('gameScreen').classList.remove('hidden');
+                this.gameActive = true;
+                this.startTimer();
+                this.createCoconut();
+                this.startScreenShake();
+            }
             
             startTimer() {
                 const timer = setInterval(() => {
@@ -449,62 +434,20 @@
         }
         
         // Telegram Games API
-// Safe wrapper — не переопределяем глобал, используем его если доступен
-function safeSetScore(score) {
-  if (window.TelegramGameProxy && typeof window.TelegramGameProxy.setScore === 'function') {
-    window.TelegramGameProxy.setScore(score);
-    return;
-  }
-  // fallback: отправить счет на свой backend (см. раздел про API)
-  fetch('/report-score', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ score, // попутно прочитать user/chat/message из URL
-      user_id: getQueryParam('user_id'),
-      chat_id: getQueryParam('chat_id'),
-      message_id: getQueryParam('message_id')
-    })
-  }).catch(console.error);
-}
-
-function safeShareScore() {
-  if (window.TelegramGameProxy && typeof window.TelegramGameProxy.shareScore === 'function') {
-    window.TelegramGameProxy.shareScore();
-    return;
-  }
-  alert('Share your score: ' + game.score);
-}
-
-function getQueryParam(name) {
-  const params = new URLSearchParams(window.location.search);
-  return params.get(name);
-};
+        const TelegramGameProxy = {
+            setScore: function(score) {
+                if (window.TelegramGameProxy) {
+                    window.TelegramGameProxy.setScore(score);
+                }
+            },
+            shareScore: function() {
+                if (window.TelegramGameProxy) {
+                    window.TelegramGameProxy.shareScore();
+                } else {
+                    alert('Share your score: ' + game.score + ' coconuts in the basket!');
+                }
+            }
+        };
     </script>
-</body>
-</html>
-    </div>
-
-  <script src="https://telegram.org/js/games.js"></script>
-  <script>
-    // Пример функции safeSetScore
-    function safeSetScore(score) {
-      if (window.TelegramGameProxy && typeof window.TelegramGameProxy.setScore === 'function') {
-        window.TelegramGameProxy.setScore(score);
-      } else {
-        fetch('/report-score', {
-          method: 'POST', headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-            score,
-            chat_id: new URL(location).searchParams.get('chat_id'),
-            message_id: new URL(location).searchParams.get('message_id'),
-            user_id: new URL(location).searchParams.get('user_id')
-          })
-        });
-      }
-    }
-
-    // Пример замены вызовов TelegramGameProxy с safeSetScore / safeShareScore
-    // victory() и endGame() вызывают safeSetScore(this.score);
-  </script>
 </body>
 </html>
