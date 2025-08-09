@@ -211,6 +211,21 @@
             this.startY = 0;
         }
         
+        resetGame() {
+            this.score = 0;
+            this.coconutsLeft = 5;
+            this.timeLeft = 60;
+            this.gameActive = false;
+            document.getElementById('score').textContent = this.score;
+            document.getElementById('coconutsLeft').textContent = this.coconutsLeft;
+            document.getElementById('timer').textContent = this.timeLeft;
+            document.getElementById('victory').classList.add('hidden');
+            document.getElementById('gameOver').classList.add('hidden');
+            document.getElementById('rules').classList.remove('hidden');
+            // Remove all coconuts
+            document.querySelectorAll('.coconut').forEach(e => e.remove());
+        }
+        
         checkCooldown() {
             if (!ENABLE_COOLDOWN) return true; // Ограничение выключено
             if (this.lastPlayTime) {
@@ -222,6 +237,7 @@
         }
         
         startGame() {
+            this.resetGame(); // <--- добавлено
             if (ENABLE_COOLDOWN && !this.checkCooldown()) {
                 const hoursLeft = Math.ceil(48 - ((Date.now() - parseInt(this.lastPlayTime)) / (1000 * 60 * 60)));
                 alert('You can play again in ' + hoursLeft + ' hours');
