@@ -5,194 +5,183 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Coconut Toss Game</title>
   <style>
-    /* (вставь здесь стили из твоего HTML) */
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1);
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+    
+    #gameContainer {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      cursor: crosshair;
+    }
+    
+    #rules, #victory, #gameOver {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255,255,255,0.95);
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      max-width: 90%;
+    }
+    
+    .btn {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    
+    .btn:hover { background: #ff5252; }
+    
+    #gameUI {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    
+    #basket {
+      position: absolute;
+      bottom: 100px;
+      /* BASKET SIZE ADJUSTMENT - Change width/height for hit area (currently 20% of screen width) */
+      width: 20vw; 
+      height: 15vw;
+      min-width: 60px;
+      min-height: 45px;
+      max-width: 120px;
+      max-height: 90px;
+      background: #8B4513;
+      border-radius: 10px 10px 20px 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: basketShake 0.3s infinite;
+    }
+    
+    .coconut {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: #8B4513;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    @keyframes basketShake {
+      /* BASKET SHAKE INTENSITY - Adjust translate values for more/less shake */
+      0% { transform: translateX(-50%) translateY(0px) rotate(0deg); }
+      10% { transform: translateX(-45%) translateY(-4px) rotate(2deg); }
+      20% { transform: translateX(-55%) translateY(2px) rotate(-3deg); }
+      30% { transform: translateX(-48%) translateY(-3px) rotate(1deg); }
+      40% { transform: translateX(-52%) translateY(3px) rotate(-2deg); }
+      50% { transform: translateX(-47%) translateY(-2px) rotate(2deg); }
+      60% { transform: translateX(-53%) translateY(4px) rotate(-1deg); }
+      70% { transform: translateX(-49%) translateY(-3px) rotate(3deg); }
+      80% { transform: translateX(-51%) translateY(2px) rotate(-2deg); }
+      90% { transform: translateX(-48%) translateY(-4px) rotate(1deg); }
+      100% { transform: translateX(-50%) translateY(0px) rotate(0deg); }
+    }
+    
+    @keyframes screenShake {
+      0% { transform: translate(0); }
+      10% { transform: translate(-1px, -1px); }
+      20% { transform: translate(1px, -1px); }
+      30% { transform: translate(-1px, 1px); }
+      40% { transform: translate(1px, 1px); }
+      50% { transform: translate(0); }
+    }
+    
+    .screen-shake {
+      animation: screenShake 0.5s ease-in-out;
+    }
+    
+    .fireworks {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #ffff00;
+      border-radius: 50%;
+    }
+    
+    #victoryCode {
+      font-size: 24px;
+      font-weight: bold;
+      color: #ff6b6b;
+      margin: 10px 0;
+      padding: 10px;
+      background: #f0f0f0;
+      border-radius: 8px;
+    }
+    
+    .hidden { display: none; }
   </style>
 </head>
 <body>
-  <div id="gameContainer"><!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coconut Toss</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1);
-            font-family: Arial, sans-serif;
-            overflow: hidden;
-        }
-        
-        #gameContainer {
-            width: 100vw;
-            height: 100vh;
-            position: relative;
-            cursor: crosshair;
-        }
-        
-        #rules, #victory, #gameOver {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255,255,255,0.95);
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            max-width: 90%;
-        }
-        
-        .btn {
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 10px;
-        }
-        
-        .btn:hover { background: #ff5252; }
-        
-        #gameUI {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-        
-        #basket {
-            position: absolute;
-            bottom: 100px;
-            /* BASKET SIZE ADJUSTMENT - Change width/height for hit area (currently 20% of screen width) */
-            width: 20vw; 
-            height: 15vw;
-            min-width: 60px;
-            min-height: 45px;
-            max-width: 120px;
-            max-height: 90px;
-            background: #8B4513;
-            border-radius: 10px 10px 20px 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: basketShake 0.3s infinite;
-        }
-        
-        .coconut {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background: #8B4513;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        @keyframes basketShake {
-            /* BASKET SHAKE INTENSITY - Adjust translate values for more/less shake */
-            0% { transform: translateX(-50%) translateY(0px) rotate(0deg); }
-            10% { transform: translateX(-45%) translateY(-4px) rotate(2deg); }
-            20% { transform: translateX(-55%) translateY(2px) rotate(-3deg); }
-            30% { transform: translateX(-48%) translateY(-3px) rotate(1deg); }
-            40% { transform: translateX(-52%) translateY(3px) rotate(-2deg); }
-            50% { transform: translateX(-47%) translateY(-2px) rotate(2deg); }
-            60% { transform: translateX(-53%) translateY(4px) rotate(-1deg); }
-            70% { transform: translateX(-49%) translateY(-3px) rotate(3deg); }
-            80% { transform: translateX(-51%) translateY(2px) rotate(-2deg); }
-            90% { transform: translateX(-48%) translateY(-4px) rotate(1deg); }
-            100% { transform: translateX(-50%) translateY(0px) rotate(0deg); }
-        }
-        
-        @keyframes screenShake {
-            0% { transform: translate(0); }
-            10% { transform: translate(-1px, -1px); }
-            20% { transform: translate(1px, -1px); }
-            30% { transform: translate(-1px, 1px); }
-            40% { transform: translate(1px, 1px); }
-            50% { transform: translate(0); }
-        }
-        
-        .screen-shake {
-            animation: screenShake 0.5s ease-in-out;
-        }
-        
-        .fireworks {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #ffff00;
-            border-radius: 50%;
-        }
-        
-        #victoryCode {
-            font-size: 24px;
-            font-weight: bold;
-            color: #ff6b6b;
-            margin: 10px 0;
-            padding: 10px;
-            background: #f0f0f0;
-            border-radius: 8px;
-        }
-        
-        .hidden { display: none; }
-    </style>
-</head>
-<body>
-    <div id="gameContainer">
-        <!-- Rules Screen -->
-        <div id="rules">
-            <h2>🥥 Coconut Toss Game 🥥</h2>
-            <div style="text-align: left; margin: 15px 0;">
-                <h3>Rules:</h3>
-                <p>• One Telegram account can play once per 48 hours</p>
-                <p>• You must join our Telegram group to play</p>
-                <p>• Toss 3 coconuts into the shaking basket within 60 seconds</p>
-                <p>• You have 5 coconuts total (5 attempts)</p>
-                <p>• Tap and drag to aim, release to throw</p>
-                <p>• Screen will shake to increase difficulty</p>
-            </div>
-            <button class="btn" onclick="checkGroupMembership()">Join Group & Start Game</button>
-        </div>
-        
-        <!-- Game Screen -->
-        <div id="gameScreen" class="hidden">
-            <div id="gameUI">
-                <div>Time: <span id="timer">60</span>s</div>
-                <div>Score: <span id="score">0</span>/3</div>
-                <div>Coconuts: <span id="coconutsLeft">5</span></div>
-            </div>
-            
-            <div id="basket"></div>
-            <div id="message" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 24px; font-weight: bold; display: none;"></div>
-        </div>
-        
-        <!-- Victory Screen -->
-        <div id="victory" class="hidden">
-            <h2>🎉 Congratulations! 🎉</h2>
-            <p>You won a "Sex on the Beach" cocktail!</p>
-            <p>Show this code at the bar:</p>
-            <div id="victoryCode"></div>
-            <p style="font-size: 12px; color: #666;">Valid for 24 hours</p>
-            <button class="btn" onclick="TelegramGameProxy.shareScore()">Share Score</button>
-        </div>
-        
-        <!-- Game Over Screen -->
-        <div id="gameOver" class="hidden">
-            <h2>⏰ Time's Up!</h2>
-            <p>You didn't manage to get 3 coconuts in the basket.</p>
-            <p>Try again in 48 hours!</p>
-            <button class="btn" onclick="TelegramGameProxy.shareScore()">Share Score</button>
-        </div>
+  <div id="gameContainer">
+    <!-- Rules Screen -->
+    <div id="rules">
+      <h2>🥥 Coconut Toss Game 🥥</h2>
+      <div style="text-align: left; margin: 15px 0;">
+        <h3>Rules:</h3>
+        <p>• One Telegram account can play once per 48 hours</p>
+        <p>• You must join our Telegram group to play</p>
+        <p>• Toss 3 coconuts into the shaking basket within 60 seconds</p>
+        <p>• You have 5 coconuts total (5 attempts)</p>
+        <p>• Tap and drag to aim, release to throw</p>
+        <p>• Screen will shake to increase difficulty</p>
+      </div>
+      <button class="btn" onclick="checkGroupMembership()">Join Group & Start Game</button>
     </div>
+    
+    <!-- Game Screen -->
+    <div id="gameScreen" class="hidden">
+      <div id="gameUI">
+        <div>Time: <span id="timer">60</span>s</div>
+        <div>Score: <span id="score">0</span>/3</div>
+        <div>Coconuts: <span id="coconutsLeft">5</span></div>
+      </div>
+      
+      <div id="basket"></div>
+      <div id="message" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 24px; font-weight: bold; display: none;"></div>
+    </div>
+    
+    <!-- Victory Screen -->
+    <div id="victory" class="hidden">
+      <h2>🎉 Congratulations! 🎉</h2>
+      <p>You won a "Sex on the Beach" cocktail!</p>
+      <p>Show this code at the bar:</p>
+      <div id="victoryCode"></div>
+      <p style="font-size: 12px; color: #666;">Valid for 24 hours</p>
+      <button class="btn" onclick="TelegramGameProxy.shareScore()">Share Score</button>
+    </div>
+    
+    <!-- Game Over Screen -->
+    <div id="gameOver" class="hidden">
+      <h2>⏰ Time's Up!</h2>
+      <p>You didn't manage to get 3 coconuts in the basket.</p>
+      <p>Try again in 48 hours!</p>
+      <button class="btn" onclick="TelegramGameProxy.shareScore()">Share Score</button>
+    </div>
+  </div>
 
-    <script>
-            // === Флаг для включения/выключения 48-часового ограничения ===
+  <script>
+    // === Флаг для включения/выключения 48-часового ограничения ===
     const ENABLE_COOLDOWN = false; // true — ограничение работает, false — можно играть сколько угодно
 
     class CoconutGame {
@@ -496,10 +485,6 @@ function getQueryParam(name) {
   return params.get(name);
 };
     </script>
-</body>
-</html>
-    </div>
-
   <script src="https://telegram.org/js/games.js"></script>
   <script>
     // Пример функции safeSetScore
