@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beach Challenge – Rules & Terms</title>
+  <style>
+    :root { --bg:#0f172a; --card:#111827; --muted:#9ca3af; --accent:#22c55e; --danger:#ef4444; }
+    html,body { margin:0; padding:0; background:#0b1220; color:#e5e7eb; font:16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 32px 20px 60px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom: 24px; }
+    header h1 { font-size: 28px; margin:0; letter-spacing:.2px; }
+    header .brand { display:flex; align-items:center; gap:12px; }
+    header .brand img { width:40px; height:40px; border-radius:8px; object-fit:cover; background:#111; }
+    .card { background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding: 22px; margin: 14px 0; }
+    h2 { font-size:20px; margin: 8px 0 8px; }
+    h3 { font-size:18px; margin: 10px 0 6px; }
+    p { margin: 10px 0; color:#d1d5db; }
+    ul, ol { margin: 8px 0 8px 20px; }
+    li { margin: 6px 0; }
+    .muted { color:#9ca3af; }
+    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background:rgba(255,255,255,.06); padding: 1px 6px; border-radius:6px; border:1px solid rgba(255,255,255,.08); }
+    .consent { display:flex; align-items:flex-start; gap:10px; padding: 14px 16px; background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.35); border-radius: 12px; }
+    .actions { display:flex; gap:12px; flex-wrap:wrap; margin-top: 14px; }
+    .btn { appearance:none; border:none; padding: 12px 16px; border-radius: 12px; font-weight:600; cursor:not-allowed; background: #334155; color:#cbd5e1; opacity:.6; }
+    .btn.primary { background: var(--accent); color:#03120a; }
+    .btn.danger { background: var(--danger); color:white; }
+    .btn[aria-disabled="false"] { cursor:pointer; opacity:1; }
+    footer { margin-top: 26px; font-size: 14px; color:#94a3b8; }
+    .hr { height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent); margin: 16px 0; }
+    .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:14px; }
+    a { color:#93c5fd; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .tiny { font-size: 12px; color:#9ca3af; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <img src="logo.png" alt="Bar Logo" />
+        <div>
+          <h1>Beach Challenge</h1>
+          <div class="muted tiny">Read and accept to enter the contest</div>
+        </div>
+      </div>
+      <div class="muted tiny">MVP rules & terms</div>
+    </header>
+
+    <section class="card" id="summary">
+      <h2>Quick Summary</h2>
+      <p>Take a selfie with our bar or logo in the background, post it on your social media with our hashtag and tag, then send a screenshot to our Telegram bot. After approval, you receive a one‑time code for a free shot or a discount. One reward per person per day.</p>
+      <div class="hr"></div>
+      <div class="grid">
+        <div>
+          <h3>How it works</h3>
+          <ol>
+            <li>Scan the QR to open the Telegram bot.</li>
+            <li>See the rules and examples in the bot.</li>
+            <li>Post your selfie on Instagram, TikTok, or Facebook with the bar’s hashtag and tag.</li>
+            <li>Send a <strong>screenshot</strong> of your post to the bot (or the photo itself if you don’t use social media).</li>
+            <li>After approval, get your unique 6‑character code. Show it to the bartender to redeem.</li>
+          </ol>
+        </div>
+        <div>
+          <h3>What you’ll need</h3>
+          <ul>
+            <li>Phone with Telegram.</li>
+            <li>A clear selfie with the bar/logo visible.</li>
+            <li>Public post or a screenshot that shows your post date, tag, and hashtag.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="rules">
+      <h2>Rules & Participation</h2>
+      <ol>
+        <li><strong>Take a new photo.</strong> The bar or logo must be clearly visible. Old or unclear photos may be rejected.</li>
+        <li><strong>Post for reach.</strong> Share on Instagram, TikTok, or Facebook with the bar’s official hashtag and tag. If you have no social media, send the photo directly to the bot.</li>
+        <li><strong>Send a screenshot to the bot.</strong> The screenshot should show your post date and the tag/hashtag. This lets us verify it fast.</li>
+        <li><strong>Wait for review.</strong> We check for clarity, brand visibility, and basic content rules (no offensive or unsafe content).</li>
+        <li><strong>Get your code.</strong> Approved entries get a unique code valid for 24 hours. Show this code to redeem your bonus.</li>
+      </ol>
+      <p class="tiny">Tip: Keep your post public for at least 24 hours so we can verify it if needed.</p>
+    </section>
+
+    <section class="card" id="fairplay">
+      <h2>Fair Play & Anti‑Abuse</h2>
+      <ul>
+        <li>One bonus per user per day, tracked by your Telegram account.</li>
+        <li>No duplicate or recycled photos. Re‑uploads of the same content can be rejected.</li>
+        <li>Codes are single‑use and expire 24 hours after approval.</li>
+        <li>We may decline entries that do not meet the rules or appear automated or fraudulent.</li>
+      </ul>
+    </section>
+
+    <section class="card" id="eligibility">
+      <h2>Eligibility</h2>
+      <ul>
+        <li>You must meet the legal drinking age of your location. ID may be required at the bar.</li>
+        <li>Offer may be limited by time of day or stock availability. The bar may pause or end the challenge at any time.</li>
+      </ul>
+    </section>
+
+    <section class="card" id="prize">
+      <h2>Prize & Redemption</h2>
+      <ul>
+        <li>Typical reward: one free shot or a discount, as shown in the bot.</li>
+        <li>Show your code to the bartender. The system validates if it’s unused and not expired.</li>
+        <li>Once redeemed, the code becomes invalid. No cash alternative. Not transferable.</li>
+      </ul>
+    </section>
+
+    <section class="card" id="content">
+      <h2>Content Guidelines & Moderation</h2>
+      <ul>
+        <li>Keep it friendly, safe, and lawful. No offensive, harmful, or unsafe scenes.</li>
+        <li>The bar/logo should be visible. If not, the post may be rejected.</li>
+        <li>Moderation may be manual. Approval is at our discretion.</li>
+      </ul>
+    </section>
+
+    <section class="card" id="privacy">
+      <h2>Privacy, Consent & Use of Your Photo</h2>
+      <p>By taking part, you agree to send your selfie to our Telegram bot and allow us to re‑share approved photos on the bar’s social pages. You keep ownership of your photo and grant us a non‑exclusive, royalty‑free license to use, repost, and display it for challenge promotion, including the bar’s social media and in‑venue screens.</p>
+      <h3>What we collect</h3>
+      <ul>
+        <li>Your Telegram user ID and username.</li>
+        <li>Your screenshot or photo and basic post details (date, tag/hashtag).</li>
+        <li>Timestamps, approval status, and a one‑time redemption code.</li>
+      </ul>
+      <h3>How we use it</h3>
+      <ul>
+        <li>To verify participation, issue codes, prevent abuse, and publish selected best photos.</li>
+        <li>To keep simple reports for the bar owner (approved, redeemed, timestamps).</li>
+      </ul>
+      <h3>Your choices</h3>
+      <ul>
+        <li>You can ask us to remove your photo from our social pages later. Processing may take time and some reposts by others may remain outside our control.</li>
+        <li>To request deletion from the bot storage, message the bot with <span class="kbd">DELETE</span> or contact the bar.</li>
+      </ul>
+    </section>
+
+    <section class="card" id="legal">
+      <h2>Important Notices</h2>
+      <ul>
+        <li>Drink responsibly. If you are driving or under legal age, do not participate.</li>
+        <li>We are not responsible for network issues, unavailable platforms, or third‑party outages.</li>
+        <li>Terms and conditions are subject to change without prior notice.</li>
+      </ul>
+    </section>
+
+    <section class="card" id="consent">
+      <h2>Consent</h2>
+      <div class="consent">
+        <input id="agree" type="checkbox" aria-label="I agree" />
+        <label for="agree">
+          I have read the rules and agree that my selfie/screenshot will be sent to the Telegram bot and may be re‑posted on the bar’s social media. I understand codes are one‑time, expire in 24 hours, and the offer is limited to one per day.
+        </label>
+      </div>
+      <div class="actions">
+        <a id="enter" class="btn primary" aria-disabled="true" href="#">I Agree & Enter</a>
+        <button id="decline" class="btn danger" aria-disabled="false" type="button">I Do Not Agree</button>
+      </div>
+      <p class="tiny muted">If you do not agree, please close this page. You can still enjoy the venue without joining the challenge.</p>
+    </section>
+
+    <footer>
+      <div class="hr"></div>
+      <div>Contact: <a href="mailto:info@example.com">info@example.com</a></div>
+      <div class="tiny">Updated: <span id="updated"></span></div>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      var agree = document.getElementById('agree');
+      var enter = document.getElementById('enter');
+      var decline = document.getElementById('decline');
+      var updated = document.getElementById('updated');
+      try { updated.textContent = new Date().toLocaleDateString(); } catch (e) {}
+
+      function enableEnter(on) {
+        enter.setAttribute('aria-disabled', on ? 'false' : 'true');
+        if (on) {
+          enter.href = 'https://t.me/your_bot_here'; // replace with actual bot link
+        } else {
+          enter.href = '#';
+        }
+      }
+
+      agree.addEventListener('change', function () {
+        enableEnter(agree.checked);
+      });
+
+      decline.addEventListener('click', function () {
+        alert('You chose not to participate. Feel free to visit the bar and have a great time.');
+      });
+
+      enableEnter(false);
+    })();
+  </script>
+</body>
+</html>
